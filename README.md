@@ -3,27 +3,27 @@
 - This project is ongoing and under active development.
 
 ## Microservices Architecture
-### 1. Authentication Service
+#### 1. Authentication Service
 - Responsible for user management and security
 - Handles user registration, login, and role-based access control
 - Implements JWT (JSON Web Token) authentication
 
-### 2. Member Management Service
+#### 2. Member Management Service
 - Manages member-related operations
 - Handles member profiles, subscriptions, and membership details
 
-### 3. Booking and Scheduling Service
+#### 3. Booking and Scheduling Service
 - Manages class bookings, trainer schedules, and facility reservations
 
-### 4. Payment Service
+#### 4. Payment Service
 - Handles membership payments, billing, and financial transactions
 
-### 5. Fitness Tracking Service
+#### 5. Fitness Tracking Service
 - Manages member fitness progress, workout logs, and performance tracking
 
 ## Use Cases in Detail
 
-### Authentication Service Use Cases
+#### Authentication Service Use Cases
 1. User Registration
    - Allow new users (members, staff, trainers) to create accounts
    - Validate user information
@@ -40,7 +40,7 @@
    - Change passwords
    - Manage account settings
 
-### Member Management Service Use Cases
+#### Member Management Service Use Cases
 1. Member Registration
    - Create new member profiles
    - Capture personal information
@@ -56,7 +56,7 @@
    - Track body measurements
    - Record fitness assessments
 
-### Booking and Scheduling Service Use Cases
+#### Booking and Scheduling Service Use Cases
 1. Class Booking
    - Browse available fitness classes
    - Book and cancel class reservations
@@ -72,7 +72,7 @@
    - Book specific gym areas (weight room, studio)
    - Manage time slots and capacity
 
-### Payment Service Use Cases
+#### Payment Service Use Cases
 1. Membership Payment Processing
    - Handle recurring membership payments
    - Support multiple payment methods
@@ -83,7 +83,7 @@
    - Billing for extra classes or services
    - Manage refunds and credits
 
-### Fitness Tracking Service Use Cases
+#### Fitness Tracking Service Use Cases
 1. Workout Logging
    - Record exercise routines
    - Track sets, reps, weights
