@@ -1,6 +1,7 @@
 package com.gym.management.membership.service;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -8,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.gym.management.membership.model.Member;
 import com.gym.management.membership.model.Membership;
+import com.gym.management.membership.repository.MembershipRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -15,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MembershipService {
 	private final MemberService memberService;
+	private final MembershipRepository membershipRepository;
 
 	@Transactional
 	public Membership createMembership(UUID memberId, Membership.MembershipType type) {
@@ -71,4 +74,8 @@ public class MembershipService {
 		case PREMIUM -> LocalDate.now().plusMonths(3);
 		};
 	}
+	
+    public List<Membership> getAllMemberships() {
+        return membershipRepository.findAll();
+    }
 }
