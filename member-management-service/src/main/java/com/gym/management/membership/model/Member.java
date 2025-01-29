@@ -2,7 +2,6 @@ package com.gym.management.membership.model;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -21,8 +20,8 @@ import lombok.Data;
 @Table(name = "members")
 public class Member {
 	@Id
-	@GeneratedValue(strategy = GenerationType.UUID)
-	private UUID id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int id;
 
 	@Column(nullable = false)
 	private String firstName;

@@ -1,7 +1,6 @@
 package com.gym.management.membership.service;
 
 import java.util.List;
-import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +19,7 @@ public class MemberService {
 		return memberRepository.save(member);
 	}
 
-	public Member getMember(UUID id) {
+	public Member getMember(int id) {
 		return memberRepository.findById(id).orElseThrow(() -> new RuntimeException("Member not found"));
 	}
 
@@ -29,16 +28,17 @@ public class MemberService {
 	}
 
 	@Transactional
-	public Member updateMember(UUID id, Member memberDetails) {
+	public Member updateMember(int id, Member memberDetails) {
 		Member member = getMember(id);
 		member.setFirstName(memberDetails.getFirstName());
 		member.setLastName(memberDetails.getLastName());
 		member.setEmail(memberDetails.getEmail());
 		member.setPhoneNumber(memberDetails.getPhoneNumber());
+		member.setDateOfBirth(memberDetails.getDateOfBirth());
 		return memberRepository.save(member);
 	}
 
-	public void deleteMember(UUID id) {
+	public void deleteMember(int id) {
 		memberRepository.deleteById(id);
 	}
 }

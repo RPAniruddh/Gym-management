@@ -1,7 +1,6 @@
 package com.gym.management.membership.controller;
 
 import java.util.List;
-import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,30 +24,34 @@ public class MembershipController {
  
     @PostMapping("/members/{memberId}")
     public ResponseEntity<Membership> createMembership(
-            @PathVariable UUID memberId,
+            @PathVariable int memberId,
             @RequestParam Membership.MembershipType type) {
         return ResponseEntity.ok(membershipService.createMembership(memberId, type));
     }
  
     @PutMapping("/{membershipId}/renew")
-    public ResponseEntity<Membership> renewMembership(@PathVariable UUID membershipId) {
+    public ResponseEntity<Membership> renewMembership(@PathVariable int membershipId) {
         return ResponseEntity.ok(membershipService.renewMembership(membershipId));
     }
  
     @PutMapping("/{membershipId}/upgrade")
     public ResponseEntity<Membership> upgradeMembership(
-            @PathVariable UUID membershipId,
+            @PathVariable int membershipId,
             @RequestParam Membership.MembershipType newType) {
         return ResponseEntity.ok(membershipService.upgradeMembership(membershipId, newType));
     }
  
     @PostMapping("/{membershipId}/deactivate")
-    public ResponseEntity<Void> deactivateMembership(@PathVariable UUID membershipId) {
+    public ResponseEntity<Void> deactivateMembership(@PathVariable int membershipId) {
         membershipService.deactivateMembership(membershipId);
         return ResponseEntity.ok().build();
     }
     
-    // New method to get all memberships
+    @GetMapping("/{membershipId}")
+    public ResponseEntity<Membership> getMembershipById(@PathVariable int membershipId) {
+        return ResponseEntity.ok(membershipService.getMembership(membershipId));
+    }
+    
     @GetMapping
     public ResponseEntity<List<Membership>> getAllMemberships() {
         return ResponseEntity.ok(membershipService.getAllMemberships());

@@ -2,7 +2,6 @@ package com.gym.management.membership.model;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -20,8 +19,8 @@ import lombok.Data;
 @Table(name = "memberships")
 public class Membership {
 	@Id
-	@GeneratedValue(strategy = GenerationType.UUID)
-	private UUID id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int id;
 
 	@OneToOne
 	@JoinColumn(name = "member_id")

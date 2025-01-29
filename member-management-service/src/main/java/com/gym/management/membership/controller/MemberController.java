@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
  
 import java.util.List;
-import java.util.UUID;
  
 @RestController
 @RequestMapping("/api/members")
@@ -21,7 +20,7 @@ public class MemberController {
     }
  
     @GetMapping("/get/{id}")
-    public ResponseEntity<Member> getMember(@PathVariable UUID id) {
+    public ResponseEntity<Member> getMember(@PathVariable int id) {
         return ResponseEntity.ok(memberService.getMember(id));
     }
  
@@ -32,13 +31,13 @@ public class MemberController {
  
     @PutMapping("/update/{id}")
     public ResponseEntity<Member> updateMember(
-            @PathVariable UUID id,
+            @PathVariable int id,
             @RequestBody Member member) {
         return ResponseEntity.ok(memberService.updateMember(id, member));
     }
  
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteMember(@PathVariable UUID id) {
+    public ResponseEntity<Void> deleteMember(@PathVariable int id) {
         memberService.deleteMember(id);
         return ResponseEntity.ok().build();
     }
