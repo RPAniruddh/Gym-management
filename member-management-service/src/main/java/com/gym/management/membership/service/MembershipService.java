@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.gym.management.membership.exception.MembershipAlreadyExistsException;
 import com.gym.management.membership.exception.MembershipNotFoundException;
 import com.gym.management.membership.model.Member;
 import com.gym.management.membership.model.Membership;
@@ -17,79 +18,94 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class MembershipService {
-	private final MemberService memberService;
-	private final MembershipRepository membershipRepository;
+    private final MemberService memberService;
+    private final MembershipRepository membershipRepository;
 
-	@Transactional
-	public Membership createMembership(int memberId, Membership.MembershipType type) {
-		Member member = memberService.getMember(memberId);
+    @Transactional
+    public Membership createMembership(int memberId, Membership.MembershipType type) {
+        Member member = memberService.getMember(memberId);
 
-		Membership membership = new Membership();
-		membership.setMember(member);
-		membership.setMembershipType(type);
-		membership.setStatus(Membership.MembershipStatus.ACTIVE);
-		membership.setStartDate(LocalDate.now());
-		membership.setEndDate(calculateEndDate(type));
+        if (member.getMembership() != null) {
+            throw new MembershipAlreadyExistsException("Member already has an active membership");
+        }
 
-		member.setMembership(membership);
-		memberService.createMember(member);
+        Membership membership = new Membership();
+        membership.setMember(member);
+        membership.setMembershipType(type);
+        membership.setStatus(Membership.MembershipStatus.ACTIVE);
+        membership.setStartDate(LocalDate.now());
+        membership.setEndDate(calculateEndDate(type));
 
-		return membership;
-	}
+        member.setMembership(membership);
+        memberService.createMember(member);
 
-	@Transactional
-	public Membership renewMembership(int membershipId) {
-		Member member = memberService.getMember(membershipId);
-		Membership membership = member.getMembership();
+        return membership;
+    }
 
-		membership.setStartDate(LocalDate.now());
-		membership.setEndDate(calculateEndDate(membership.getMembershipType()));
-		membership.setStatus(Membership.MembershipStatus.ACTIVE);
+    @Transactional
+    public Membership renewMembership(int membershipId) {
+        Member member = memberService.getMember(membershipId);
+        Membership membership = member.getMembership();
 
-		memberService.createMember(member);
-		return membership;
-	}
+        if (membership == null) {
+            throw new MembershipNotFoundException("Membership not found for member with ID " + membershipId);
+        }
 
-	@Transactional
-	public Membership upgradeMembership(int membershipId, Membership.MembershipType newType) {
-		Member member = memberService.getMember(membershipId);
-		Membership membership = member.getMembership();
+        membership.setStartDate(LocalDate.now());
+        membership.setEndDate(calculateEndDate(membership.getMembershipType()));
+        membership.setStatus(Membership.MembershipStatus.ACTIVE);
 
-		membership.setMembershipType(newType);
-		membership.setEndDate(calculateEndDate(newType));
+        memberService.createMember(member);
+        return membership;
+    }
 
-		memberService.createMember(member);
-		return membership;
-	}
+    @Transactional
+    public Membership upgradeMembership(int membershipId, Membership.MembershipType newType) {
+        Member member = memberService.getMember(membershipId);
+        Membership membership = member.getMembership();
 
-	@Transactional
-	public void deactivateMembership(int membershipId) {
-		Member member = memberService.getMember(membershipId);
-		member.getMembership().setStatus(Membership.MembershipStatus.INACTIVE);
-		memberService.createMember(member);
-	}
+        if (membership == null) {
+            throw new MembershipNotFoundException("Membership not found for member with ID " + membershipId);
+        }
 
-	private LocalDate calculateEndDate(Membership.MembershipType type) {
-		return switch (type) {
-		case BASIC -> LocalDate.now().plusMonths(1);
-		case PREMIUM -> LocalDate.now().plusMonths(3);
-		};
-	}
-	
+        membership.setMembershipType(newType);
+        membership.setEndDate(calculateEndDate(newType));
+
+        memberService.createMember(member);
+        return membership;
+    }
+
+    @Transactional
+    public void deactivateMembership(int membershipId) {
+        Member member = memberService.getMember(membershipId);
+        Membership membership = member.getMembership();
+
+        if (membership == null) {
+            throw new MembershipNotFoundException("Membership not found for member with ID " + membershipId);
+        }
+
+        membership.setStatus(Membership.MembershipStatus.INACTIVE);
+        memberService.createMember(member);
+    }
+
+    private LocalDate calculateEndDate(Membership.MembershipType type) {
+        return switch (type) {
+            case BASIC -> LocalDate.now().plusMonths(1);
+            case PREMIUM -> LocalDate.now().plusMonths(3);
+        };
+    }
+
     public List<Membership> getAllMemberships() {
         return membershipRepository.findAll();
     }
 
-	public Membership getMembership(int memberId) {
-	    // Retrieve the membership from the repository
-	    Optional<Membership> membershipOptional = membershipRepository.findById(memberId);
-	    
-	    // Check if the membership is present
-	    if (membershipOptional.isPresent()) {
-	        return membershipOptional.get();
-	    } else {
-	        // Throw an exception if the membership is not found
-	        throw new MembershipNotFoundException("Membership not found with id: " + memberId);
-	    }
-	}
+    public Membership getMembership(int memberId) {
+        Optional<Membership> membershipOptional = membershipRepository.findById(memberId);
+
+        if (membershipOptional.isPresent()) {
+            return membershipOptional.get();
+        } else {
+            throw new MembershipNotFoundException("Membership not found with id: " + memberId);
+        }
+    }
 }

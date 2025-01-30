@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.gym.management.membership.exception.MemberAlreadyExistsException;
+import com.gym.management.membership.exception.MemberNotFoundException;
 import com.gym.management.membership.model.Member;
 import com.gym.management.membership.repository.MemberRepository;
 
@@ -20,7 +22,8 @@ public class MemberService {
 	}
 
 	public Member getMember(int id) {
-		return memberRepository.findById(id).orElseThrow(() -> new RuntimeException("Member not found"));
+		return memberRepository.findById(id)
+				.orElseThrow(() -> new MemberNotFoundException("Member not found with ID " + id));
 	}
 
 	public List<Member> getAllMembers() {
@@ -39,6 +42,9 @@ public class MemberService {
 	}
 
 	public void deleteMember(int id) {
+		if (!memberRepository.existsById(id)) {
+			throw new MemberNotFoundException("Member not found with ID " + id);
+		}
 		memberRepository.deleteById(id);
 	}
 }

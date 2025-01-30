@@ -13,34 +13,50 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
 @Entity
 @Table(name = "members")
 public class Member {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
-	@Column(nullable = false)
-	private String firstName;
+    @NotBlank(message = "First name is mandatory")
+    @Size(max = 10, message = "First name must be less than 50 characters")
+    @Column(nullable = false)
+    private String firstName;
 
-	@Column(nullable = false)
-	private String lastName;
+    @NotBlank(message = "Last name is mandatory")
+    @Size(max = 10, message = "Last name must be less than 50 characters")
+    @Column(nullable = false)
+    private String lastName;
 
-	@Column(nullable = false, unique = true)
-	private String email;
+    @NotBlank(message = "Email is mandatory")
+    @Email(message = "Email should be valid")
+    @Column(nullable = false, unique = true)
+    private String email;
 
-	@Column(nullable = false)
-	private String phoneNumber;
+    @NotBlank(message = "Phone number is mandatory")
+    @Pattern(regexp = "^\\+?[0-9. ()-]{7,25}$", message = "Phone number is invalid")
+    @Column(nullable = false)
+    private String phoneNumber;
 
-	@Column(nullable = false)
-	private LocalDate dateOfBirth;
+    @NotNull(message = "Date of birth is mandatory")
+    @Past(message = "Date of birth must be a past date")
+    @Column(nullable = false)
+    private LocalDate dateOfBirth;
 
-	private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime createdAt = LocalDateTime.now();
 
-	@OneToOne(mappedBy = "member", cascade = CascadeType.ALL)
-	@JsonIgnore
-	private Membership membership;
+    @OneToOne(mappedBy = "member", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Membership membership;
 }

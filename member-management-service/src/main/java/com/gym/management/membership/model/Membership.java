@@ -12,35 +12,42 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
 @Entity
 @Table(name = "memberships")
 public class Membership {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
-	@OneToOne
-	@JoinColumn(name = "member_id")
-	private Member member;
+    @NotNull(message = "Member is mandatory")
+    @OneToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
 
-	@Enumerated(EnumType.STRING)
-	private MembershipType membershipType;
+    @NotNull(message = "Membership type is mandatory")
+       private MembershipType membershipType;
 
-	@Enumerated(EnumType.STRING)
-	private MembershipStatus status;
+    @NotNull(message = "Membership status is mandatory")
+    @Enumerated(EnumType.STRING)
+    private MembershipStatus status;
 
-	private LocalDate startDate;
-	private LocalDate endDate;
-	private LocalDateTime createdAt = LocalDateTime.now();
+    @NotNull(message = "Start date is mandatory")
+    private LocalDate startDate;
 
-	public enum MembershipType {
-		BASIC, PREMIUM
-	}
+    @NotNull(message = "End date is mandatory")
+    private LocalDate endDate;
 
-	public enum MembershipStatus {
-		ACTIVE, INACTIVE
-	}
+    private LocalDateTime createdAt = LocalDateTime.now();
+
+    public enum MembershipType {
+        BASIC, PREMIUM
+    }
+
+    public enum MembershipStatus {
+        ACTIVE, INACTIVE
+    }
 }
